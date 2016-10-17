@@ -26,12 +26,21 @@ throwError() {
 
 setup() {
 	day="$(tr '[:upper:]' '[:lower:]' <<< "$1")"
+
 	echo "give a time at which you want to be woken up $day(HH:MM):"
 	read -r t 
 	hCron="$(sed -n 's/^0*\([0-9][0-9]*\):0*[0-9][0-9]*/\1/p' <<< "$t")"
 	mCron="$(sed -n 's/^0*[0-9][0-9]*:0*\([0-9][0-9]*\)/\1/p' <<< "$t")"
 	h="$(sed -n 's/^\([0-9][0-9]*\):[0-9][0-9]*/\1/p' <<< "$t")"
 	m="$(sed -n 's/^[0-9][0-9]*:\([0-9][0-9]*\)/\1/p' <<< "$t")"
+
+	minuteTimeDiff=$(bc <<< "(60 * $h + $m) - ($(date +%H) * 60 + $(date +%M))")
+	#set a default day if no specified day. We chose the closest day to which the input hour gets us to in the future.
+	if [ -z "$day" ] && [ $minuteTimeDiff -le 0 ]; then
+		day=tomorrow
+	elif [ -z "$day" ]; then
+		day=today
+	fi
 
 	if [ $day == everyday ]; then
 		actDay='*'
@@ -67,14 +76,13 @@ remember to prefix a website on the internet by http://' #otherwise python would
 		hLess="$(bc <<< "$h - 1")"
 	fi
 	
-	minuteTimeDiff=$(bc <<< "(60 * $h + $m) - ($(date +%H) * 60 + $(date +%M))")
 	if [ $minuteTimeDiff -le 0 ] && [ $day == today ]; then 
 		throwError "impossible to assign an alarm for today at a time previous to current one."
-	elif [[ *"$day"* == "today tomorrow" ]]; then
+	elif [[ "today tomorrow" == *"$day"* ]]; then
 		nextRtcWakeupDay="$day"
-	elif [ $day = everyday ] && [ $minuteTimeDiff -le 0 ]; then
+	elif [ $day == everyday ] && [ $minuteTimeDiff -le 0 ]; then
 		nextRtcWakeupDay=tomorrow
-	elif [ $day = everyday ]; then 
+	elif [ $day == everyday ]; then 
 		nextRtcWakeupDay=today
 	else 
 		throwError "unknown day"
@@ -95,9 +103,6 @@ remember to prefix a website on the internet by http://' #otherwise python would
 
 main() {
 	args="$@"
-	if [ "${#@}" -eq 0 ]; then
-		args=( "tomorrow" )
-	fi
 	setup "${args[@]}"
 }
 main "$@"
