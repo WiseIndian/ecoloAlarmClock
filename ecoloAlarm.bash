@@ -161,6 +161,9 @@ ${i}) at ${lt}"
 
 }
 main() {
+	if [ "$USER" != root ]; then
+		throwError "you can launch this program only as root"
+	fi
 	echo "what do you want to do? enter number corresponding to your choice."
 	echo "1: manage alarms"
 	echo "2: create new alarm"
