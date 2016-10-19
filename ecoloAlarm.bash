@@ -58,7 +58,7 @@ remember to prefix a website on the internet by http://' #otherwise python would
 	if [ -z "$website" ]; then
 		website='http://fipradio.fr/player'
 	fi
-	browserScript="$ecoloBashDir/browserScript$(date '+%H:%M')"
+	browserScript="$ecoloBashDir/browserScript${h}:${m}"
 	pythonInpt='import webbrowser; webbrowser.open("'"$website"'")'
 	echo 'DISPLAY=:0 python <<< '"'$pythonInpt'" > "$browserScript"
 
@@ -91,7 +91,7 @@ remember to prefix a website on the internet by http://' #otherwise python would
 	# everyday at the same time when the alarm executes
 	# we call rtcwake for the next day.
 	if [ $day == everyday ]; then
-		wakeUpScript="$ecoloBashDir/wakeUpScript$(date '+%H:%M')"
+		wakeUpScript="$ecoloBashDir/wakeUpScript${h}:${m}"
 		echo 'rtcwake -m no -t "$(date +%s -d "tomorrow '"$hLess:$mLess"'")" >> '"$ecoloBashDir"/cronlog > "$wakeUpScript"
 		cronline="$mCron $hCron * * * bash $wakeUpScript"
 		addLineToRootCrontab "$cronline"
