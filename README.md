@@ -4,4 +4,4 @@ to the launch of some website specified at the launch of the program.
 The website could be anything from a webradio, to some file your default browser can handle, or a youtube video.
 
 how to launch the program:
-bash ecoloAlarm.bash [today | tomorrow | everyday]
+sudo bash ecoloAlarm.bash
