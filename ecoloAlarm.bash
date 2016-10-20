@@ -113,7 +113,7 @@ rtcwake -m no -t "$(date +%s -d "tomorrow '"$hLess:$mLess"'")" >> '"$ecoloBashDi
 	fi
 	
 	echo "next wake up at $nextRtcWakeupDay at $hLess : $mLess"
-	rtcwake -m no -t "$(date +%s -d "$nextRtcWakeupDay $hLess:$mLess")"
+	rtcwake -m no -t "$(date +%s -d "$nextRtcWakeupDay $hLess:$mLess")" >> "$ecoloBashDir"/cronlog
 }
 
 manageAlarms() {
