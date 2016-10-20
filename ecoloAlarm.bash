@@ -69,7 +69,10 @@ remember to prefix a website on the internet by http://' #otherwise python would
 	fi
 	browserScript="$ecoloBashDir/${BRWSR_SCRIPT_NAME}${h}:${m}"
 	pythonInpt='import webbrowser; webbrowser.open("'"$website"'")'
-	echo 'DISPLAY=:0 python <<< '"'$pythonInpt'" > "$browserScript"
+	echo '
+#!/bin/bash
+PATH='"$PATH"'
+DISPLAY=:0 python <<< '"'$pythonInpt'" > "$browserScript"
 
 	addLineToCrontab "$mCron $hCron $actDay $actMth * bash $browserScript"
 	if [ "$m" == '00' ]; then
@@ -101,7 +104,10 @@ remember to prefix a website on the internet by http://' #otherwise python would
 	# we call rtcwake for the next day.
 	if [ $day == everyday ]; then
 		wakeUpScript="$ecoloBashDir/${WK_SCRIPT_NAME}${h}:${m}"
-		echo 'rtcwake -m no -t "$(date +%s -d "tomorrow '"$hLess:$mLess"'")" >> '"$ecoloBashDir"/cronlog > "$wakeUpScript"
+		echo '
+#!/bin/bash
+PATH='"$PATH"'
+rtcwake -m no -t "$(date +%s -d "tomorrow '"$hLess:$mLess"'")" >> '"$ecoloBashDir"/cronlog > "$wakeUpScript"
 		cronline="$mCron $hCron * * * bash $wakeUpScript"
 		addLineToRootCrontab "$cronline"
 	fi
